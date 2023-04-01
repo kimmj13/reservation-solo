@@ -295,13 +295,14 @@ class HospitalControllerTest {
         List<Hospital> list = List.of(hospital);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Hospital> pages = new PageImpl<>(list, pageable, list.size());
-        given(service.getHospitals(Mockito.any(Pageable.class), Mockito.anyString())).willReturn(pages);
+        given(service.getHospitals(Mockito.any(Pageable.class), Mockito.anyString(), Mockito.anyString())).willReturn(pages);
         given(mapper.hospitalsToResponseDto(Mockito.anyList())).willReturn(List.of(responseDto));
 
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
         queryParams.add("status", hospital.getHospitalStatus().toString());
+        queryParams.add("sort", "views");
 
         //when
         ResultActions actions = mockMvc.perform(get("/api/hospital")
@@ -335,7 +336,8 @@ class HospitalControllerTest {
                         requestParameters(
                                 parameterWithName("page").description("현재 페이지").optional(),
                                 parameterWithName("size").description("한 페이지당 요소 개수").optional(),
-                                parameterWithName("status").description("병원 상태")
+                                parameterWithName("status").description("병원 상태"),
+                                parameterWithName("sort").description("정렬 (views)")
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].hospitalId").description("병원 식별자"),

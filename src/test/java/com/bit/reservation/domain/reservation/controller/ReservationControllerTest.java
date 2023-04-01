@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.function.Try;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -32,7 +31,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import static com.bit.reservation.global.utils.ApiDocumentUtils.getRequestPreProcessor;
 import static com.bit.reservation.global.utils.ApiDocumentUtils.getResponsePreProcessor;
@@ -275,7 +273,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("data.subject").value(reservation.getSubject()))
                 .andExpect(jsonPath("data.clientRequest").value(reservation.getClientRequest()))
                 .andExpect(jsonPath("data.doctorName").value(reservation.getDoctor().getName()))
-                .andExpect(jsonPath("data.reservationStatus").value(reservation.getReservationStatus().toString()))
+                .andExpect(jsonPath("data.reservationStatus").value(reservation.getReservationStatus().getStatus()))
                 .andExpect(jsonPath("data.hospitalInfo.hospitalId").value(reservation.getHospital().getHospitalId()))
                 .andExpect(jsonPath("data.hospitalInfo.name").value(reservation.getHospital().getName()))
                 .andExpect(jsonPath("data.hospitalInfo.telNum").value(reservation.getHospital().getTelNum()))
@@ -343,7 +341,7 @@ class ReservationControllerTest {
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].reservationId").value(1L))
                 .andExpect(jsonPath("$.data[0].dateTime").value(reservation.getDateTime()))
-                .andExpect(jsonPath("$.data[0].reservationStatus").value(reservation.getReservationStatus().toString()))
+                .andExpect(jsonPath("$.data[0].reservationStatus").value(reservation.getReservationStatus().getStatus()))
                 .andExpect(jsonPath("$.data[0].hospitalInfo.hospitalId").value(1L))
                 .andExpect(jsonPath("$.data[0].hospitalInfo.name").value(reservation.getHospital().getName()))
                 .andExpect(jsonPath("$.data[0].hospitalInfo.telNum").value(reservation.getHospital().getTelNum()))
@@ -407,7 +405,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("data.doctorId").value(reservation.getDoctor().getDoctorId()))
                 .andExpect(jsonPath("data.doctorName").value(reservation.getDoctor().getName()))
                 .andExpect(jsonPath("data.hospitalMemo").value(reservation.getHospitalMemo()))
-                .andExpect(jsonPath("data.reservationStatus").value(reservation.getReservationStatus().toString()))
+                .andExpect(jsonPath("data.reservationStatus").value(reservation.getReservationStatus().getStatus()))
                 .andExpect(jsonPath("data.clientInfo.userId").value(reservation.getUser().getUserId()))
                 .andExpect(jsonPath("data.clientInfo.name").value(reservation.getUser().getUserName()))
                 .andExpect(jsonPath("data.clientInfo.age").value(reservation.getUser().getAge()))
@@ -471,7 +469,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.data[0].reservationId").value(reservation.getReservationId()))
                 .andExpect(jsonPath("$.data[0].dateTime").value(reservation.getDateTime()))
                 .andExpect(jsonPath("$.data[0].medicalSubject").value(reservation.getSubject()))
-                .andExpect(jsonPath("$.data[0].reservationStatus").value(reservation.getReservationStatus().toString()))
+                .andExpect(jsonPath("$.data[0].reservationStatus").value(reservation.getReservationStatus().getStatus()))
                 .andExpect(jsonPath("$.data[0].clientInfo.userId").value(reservation.getUser().getUserId()))
                 .andExpect(jsonPath("$.data[0].clientInfo.name").value(reservation.getUser().getUserName()))
                 .andExpect(jsonPath("$.data[0].clientInfo.age").value(reservation.getUser().getAge()))
@@ -586,7 +584,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.data[0].reservationId").value(reservation.getReservationId()))
                 .andExpect(jsonPath("$.data[0].dateTime").value(reservation.getDateTime()))
                 .andExpect(jsonPath("$.data[0].medicalSubject").value(reservation.getSubject()))
-                .andExpect(jsonPath("$.data[0].reservationStatus").value(reservation.getReservationStatus().toString()))
+                .andExpect(jsonPath("$.data[0].reservationStatus").value(reservation.getReservationStatus().getStatus()))
                 .andExpect(jsonPath("$.data[0].clientInfo.userId").value(reservation.getUser().getUserId()))
                 .andExpect(jsonPath("$.data[0].clientInfo.name").value(reservation.getUser().getUserName()))
                 .andExpect(jsonPath("$.data[0].clientInfo.age").value(reservation.getUser().getAge()))

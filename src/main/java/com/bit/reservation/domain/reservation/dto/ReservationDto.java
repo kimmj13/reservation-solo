@@ -55,6 +55,10 @@ public class ReservationDto {
         private HospitalInfo hospitalInfo;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
+
+        public String getReservationStatus() {
+            return reservationStatus.getStatus();
+        }
     }
 
     @Builder
@@ -67,6 +71,10 @@ public class ReservationDto {
         private String dateTime;
         private ReservationStatus reservationStatus;
         private HospitalInfo hospitalInfo;
+
+        public String getReservationStatus() {
+            return reservationStatus.getStatus();
+        }
     }
 
     @Builder
@@ -91,6 +99,10 @@ public class ReservationDto {
         private LocalDateTime modifiedAt;
 
         private ClientInfo clientInfo;
+
+        public String getReservationStatus() {
+            return reservationStatus.getStatus();
+        }
     }
 
     @Builder
@@ -108,6 +120,10 @@ public class ReservationDto {
         private String medicalSubject;
         private ReservationStatus reservationStatus;
         private ClientInfo clientInfo;
+
+        public String getReservationStatus() {
+            return reservationStatus.getStatus();
+        }
     }
 
 
@@ -168,5 +184,9 @@ public class ReservationDto {
         private ReservationStatus reservationStatus;
         private ClientInfo clientInfo;
         private HospitalInfo hospitalInfo;
+
+        public String getReservationStatus() {
+            return reservationStatus.getStatus();
+        }
     }
 }
