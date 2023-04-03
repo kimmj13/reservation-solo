@@ -47,8 +47,6 @@ public class DoctorService {
                         .ifPresent(findDoctor::setCareer);
         Optional.ofNullable(doctor.getMedicalSubject())
                         .ifPresent(findDoctor::setMedicalSubject);
-        Optional.ofNullable(doctor.getPicture())
-                        .ifPresent(findDoctor::setPicture);
 
         return doctorRepository.save(findDoctor);
     }

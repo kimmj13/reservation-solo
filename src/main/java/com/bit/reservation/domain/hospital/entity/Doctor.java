@@ -29,10 +29,6 @@ public class Doctor {
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> medicalSubject;
 
-    //TODO: 사진 올리는 로직 구현할지 생각해보기..
-    @Column
-    private String picture;
-
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "HOSPITAL_ID")
     private Hospital hospital;

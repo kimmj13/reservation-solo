@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Page<Doctor> findAllByHospital(Pageable pageable, Hospital hospital);
 
+    Optional<Doctor> findByHospital(Hospital hospital);
+
     Optional<Doctor> findByName(String name);
 
     Optional<Doctor> findByNameAndHospital(String name, Hospital hospital);

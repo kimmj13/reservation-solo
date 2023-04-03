@@ -109,7 +109,7 @@ class DoctorControllerTest {
     @Test
     void patchDoctor() throws Exception {
         //given
-        DoctorDto.PatchDto patchDto = new DoctorDto.PatchDto(1L, "의사1", "학교이름", "경력", List.of("진료과목"), "사진");
+        DoctorDto.PatchDto patchDto = new DoctorDto.PatchDto(1L, "의사1", "학교이름", "경력", List.of("진료과목"));
         String requestBody = gson.toJson(patchDto);
         given(mapper.patchDtoToDoctor(Mockito.any(DoctorDto.PatchDto.class))).willReturn(doctor);
         given(service.updateDoctor(Mockito.any(Doctor.class))).willReturn(doctor);
@@ -136,8 +136,7 @@ class DoctorControllerTest {
                                 fieldWithPath("name").description("이름"),
                                 fieldWithPath("school").description("학교").optional(),
                                 fieldWithPath("career").description("경력").optional(),
-                                fieldWithPath("medicalSubject").description("진료 과목"),
-                                fieldWithPath("picture").description("사진")
+                                fieldWithPath("medicalSubject").description("진료 과목")
                         )),
                         responseFields(fieldWithPath("doctorId").description("의사 식별자"))
                 ));
@@ -163,7 +162,7 @@ class DoctorControllerTest {
     @Test
     void getDoctor() throws Exception {
         //given
-        DoctorDto.ResponseDto res = new DoctorDto.ResponseDto(1L, doctor.getName(), doctor.getSchool(), doctor.getCareer(), doctor.getMedicalSubject(), doctor.getPicture());
+        DoctorDto.ResponseDto res = new DoctorDto.ResponseDto(1L, doctor.getName(), doctor.getSchool(), doctor.getCareer(), doctor.getMedicalSubject());
         given(service.getDoctor(Mockito.anyLong())).willReturn(doctor);
         given(mapper.doctorToResponseDto(Mockito.any(Doctor.class))).willReturn(res);
 
@@ -176,7 +175,6 @@ class DoctorControllerTest {
                 .andExpect(jsonPath("$.data.school").value(doctor.getSchool()))
                 .andExpect(jsonPath("$.data.career").value(doctor.getCareer()))
                 .andExpect(jsonPath("$.data.medicalSubject[0]").value(doctor.getMedicalSubject().get(0)))
-                .andExpect(jsonPath("$.data.picture").value(doctor.getPicture()))
                 .andDo(document("get-doctor",
                         getResponsePreProcessor(),
                         pathParameters(parameterWithName("doctorId").description("의사 식별자")),
@@ -198,7 +196,7 @@ class DoctorControllerTest {
         List<Doctor> doctors = List.of(doctor);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Doctor> pages = new PageImpl(doctors, pageable, doctors.size());
-        DoctorDto.ResponseDto res = new DoctorDto.ResponseDto(1L, doctor.getName(), doctor.getSchool(), doctor.getCareer(), doctor.getMedicalSubject(), doctor.getPicture());
+        DoctorDto.ResponseDto res = new DoctorDto.ResponseDto(1L, doctor.getName(), doctor.getSchool(), doctor.getCareer(), doctor.getMedicalSubject());
 
         given(service.getDoctors(Mockito.anyInt(), Mockito.anyInt())).willReturn(pages);
         given(mapper.doctorsToResponseDto(Mockito.anyList())).willReturn(List.of(res));
@@ -216,7 +214,6 @@ class DoctorControllerTest {
                 .andExpect(jsonPath("$.data[0].school").value(doctor.getSchool()))
                 .andExpect(jsonPath("$.data[0].career").value(doctor.getCareer()))
                 .andExpect(jsonPath("$.data[0].medicalSubject[0]").value(doctor.getMedicalSubject().get(0)))
-                .andExpect(jsonPath("$.data[0].picture").value(doctor.getPicture()))
                 .andExpect(jsonPath("$.pageInfo.page").value(1))
                 .andExpect(jsonPath("$.pageInfo.size").value(10))
                 .andExpect(jsonPath("$.pageInfo.totalElements").value(1))
@@ -250,7 +247,7 @@ class DoctorControllerTest {
         List<Doctor> doctors = List.of(doctor);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Doctor> pages = new PageImpl(doctors, pageable, doctors.size());
-        DoctorDto.ResponseDto res = new DoctorDto.ResponseDto(1L, doctor.getName(), doctor.getSchool(), doctor.getCareer(), doctor.getMedicalSubject(), doctor.getPicture());
+        DoctorDto.ResponseDto res = new DoctorDto.ResponseDto(1L, doctor.getName(), doctor.getSchool(), doctor.getCareer(), doctor.getMedicalSubject());
 
         given(service.findHospitalDoctors(Mockito.any(Pageable.class), Mockito.anyLong())).willReturn(pages);
         given(mapper.doctorsToResponseDto(Mockito.anyList())).willReturn(List.of(res));
@@ -265,7 +262,6 @@ class DoctorControllerTest {
                 .andExpect(jsonPath("$.data[0].school").value(doctor.getSchool()))
                 .andExpect(jsonPath("$.data[0].career").value(doctor.getCareer()))
                 .andExpect(jsonPath("$.data[0].medicalSubject[0]").value(doctor.getMedicalSubject().get(0)))
-                .andExpect(jsonPath("$.data[0].picture").value(doctor.getPicture()))
                 .andExpect(jsonPath("$.pageInfo.page").value(1))
                 .andExpect(jsonPath("$.pageInfo.size").value(10))
                 .andExpect(jsonPath("$.pageInfo.totalElements").value(1))

@@ -50,9 +50,6 @@ public class DoctorDto {
 
         @Size(min = 1, max = 300)
         private List<String> medicalSubject;
-
-        //TODO
-        private String picture;
     }
 
     @Builder
@@ -66,7 +63,6 @@ public class DoctorDto {
         private String school;
         private String career;
         private List<String> medicalSubject;
-        private String picture;
     }
 
     @Getter @Setter
