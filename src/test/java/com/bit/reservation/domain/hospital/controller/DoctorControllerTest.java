@@ -183,8 +183,7 @@ class DoctorControllerTest {
                                 fieldWithPath("data.name").description("이름"),
                                 fieldWithPath("data.school").description("학교"),
                                 fieldWithPath("data.career").description("경력"),
-                                fieldWithPath("data.medicalSubject").description("진료 과목"),
-                                fieldWithPath("data.picture").description("사진")
+                                fieldWithPath("data.medicalSubject").description("진료 과목")
                         ))
                 ));
     }
@@ -232,7 +231,6 @@ class DoctorControllerTest {
                                 fieldWithPath("data[].school").description("학교"),
                                 fieldWithPath("data[].career").description("경력"),
                                 fieldWithPath("data[].medicalSubject").description("진료 과목"),
-                                fieldWithPath("data[].picture").description("사진"),
                                 fieldWithPath("pageInfo.page").description("현재 페이지"),
                                 fieldWithPath("pageInfo.size").description("한 페이지당 요소 개수"),
                                 fieldWithPath("pageInfo.totalElements").description("총 요소 개수"),
@@ -279,7 +277,6 @@ class DoctorControllerTest {
                                 fieldWithPath("data[].school").description("학교"),
                                 fieldWithPath("data[].career").description("경력"),
                                 fieldWithPath("data[].medicalSubject").description("진료 과목"),
-                                fieldWithPath("data[].picture").description("사진"),
                                 fieldWithPath("pageInfo.page").description("현재 페이지"),
                                 fieldWithPath("pageInfo.size").description("한 페이지당 요소 개수"),
                                 fieldWithPath("pageInfo.totalElements").description("총 요소 개수"),

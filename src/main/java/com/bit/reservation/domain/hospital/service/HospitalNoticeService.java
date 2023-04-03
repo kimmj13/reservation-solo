@@ -22,13 +22,13 @@ public class HospitalNoticeService {
     private final HospitalService hospitalService;
 
     public HospitalNotice createNotice(HospitalNotice hospitalNotice) {
-        hospitalNotice.setHospital(hospitalService.getLoginHospital());
+        hospitalNotice.setHospital(hospitalService.checkHospital());
         return hospitalNoticeRepository.save(hospitalNotice);
     }
 
     public HospitalNotice updateNotice(HospitalNotice hospitalNotice) {
         HospitalNotice findNotice = existsNotice(hospitalNotice.getHospitalNoticeId());
-        hospitalService.checkJwtAndUser(findNotice.getHospital().getHospitalId());
+        hospitalService.checkJwtAndHospital(findNotice.getHospital().getHospitalId());
         findNotice.setTitle(hospitalNotice.getTitle());
         findNotice.setContent(hospitalNotice.getContent());
         return hospitalNoticeRepository.save(findNotice);
@@ -46,7 +46,7 @@ public class HospitalNoticeService {
 
     public void deleteNotice(Long noticeId) {
         HospitalNotice findNotice = existsNotice(noticeId);
-        hospitalService.checkJwtAndUser(findNotice.getHospital().getHospitalId());
+        hospitalService.checkJwtAndHospital(findNotice.getHospital().getHospitalId());
         hospitalNoticeRepository.delete(findNotice);
     }
 

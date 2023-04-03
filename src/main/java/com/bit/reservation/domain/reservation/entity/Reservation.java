@@ -1,5 +1,6 @@
 package com.bit.reservation.domain.reservation.entity;
 
+import com.bit.reservation.domain.estimate.entity.Estimate;
 import com.bit.reservation.domain.hospital.entity.Doctor;
 import com.bit.reservation.domain.hospital.entity.Hospital;
 import com.bit.reservation.domain.hospital.entity.HospitalRate;
@@ -40,6 +41,8 @@ public class Reservation extends Auditable {
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
+    private boolean quotation;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
@@ -61,5 +64,9 @@ public class Reservation extends Auditable {
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> quitClientInfo = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "ESTIMATE_ID")
+    private Estimate estimate;
 
 }

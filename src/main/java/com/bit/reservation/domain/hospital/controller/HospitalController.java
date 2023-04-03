@@ -9,9 +9,11 @@ import com.bit.reservation.global.dto.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/hospital")
 @RequiredArgsConstructor
+@Validated
 public class HospitalController {
 
     private final HospitalService hospitalService;
@@ -53,11 +56,9 @@ public class HospitalController {
     }
 
     @GetMapping
-    public ResponseEntity getHospitals(@PageableDefault(page = 1, size = 10) Pageable pageable,
-                                       @RequestParam(required = false) String status,
-                                       @RequestParam(required = false) String sort
-                                       ) {
-        Page<Hospital> pages = hospitalService.getHospitals(pageable, status, sort);
+    public ResponseEntity getHospitals(@PageableDefault(page = 1, size = 10, sort = "hospitalId", direction = Sort.Direction.DESC) Pageable pageable,
+                                       @RequestParam(required = false) String status) {
+        Page<Hospital> pages = hospitalService.getHospitals(pageable, status);
         List<Hospital> hospitals = pages.getContent();
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.hospitalsToResponseDto(hospitals), pages), HttpStatus.OK);
     }

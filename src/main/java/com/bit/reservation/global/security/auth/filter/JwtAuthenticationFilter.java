@@ -72,7 +72,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             user = new User();
             user.setEmail(hospital.getEmail());
             user.setUserId(hospital.getHospitalId());
-            //TODO : roles lazy로 할 수 있는 방법 찾기
             user.setRoles(authorityUtils.getHospitalRoles(hospital.getEmail()));
             id = "hospitalId";
         }

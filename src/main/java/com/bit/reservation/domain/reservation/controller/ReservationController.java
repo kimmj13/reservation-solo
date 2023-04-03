@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reservation")
 @RequiredArgsConstructor
+@Validated
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -43,10 +45,8 @@ public class ReservationController {
     public ResponseEntity patchReservation(@PathVariable("reservation-id") @Positive Long reservationId,
                                            @RequestBody @Valid ReservationDto.PatchDto patchDto) {
         patchDto.setReservationId(reservationId);
-        //TODO findDoctorByNameAndHospital로 변경해야함.. 근데 매퍼까지 연관되어있어서..이런..
-        Doctor doctor = patchDto.getDoctorName() != null ? doctorService.findDoctorByName(patchDto.getDoctorName()) : null;
-        Reservation reservation = mapper.patchDtoToReservation(patchDto, doctor);
-        Reservation updatedReservation = reservationService.updateReservation(reservation);
+        Reservation reservation = mapper.patchDtoToReservation(patchDto);
+        Reservation updatedReservation = reservationService.updateReservation(reservation, patchDto.getDoctorName());
         return new ResponseEntity<>(mapper.reservationToSimpleResponseDto(updatedReservation), HttpStatus.OK);
     }
 
@@ -100,7 +100,7 @@ public class ReservationController {
                                                      @RequestBody @Valid ReservationDto.PatchDtoForHospital patchDto) {
         patchDto.setReservationId(reservationId);
         Reservation reservation = mapper.patchDtoForHospitalToReservation(patchDto);
-        Reservation updatedReservation = reservationService.updateReservationByHospital(hospitalId, reservation);
+        Reservation updatedReservation = reservationService.updateReservationByHospital(hospitalId, reservation, patchDto.getDoctorId());
         return new ResponseEntity<>(mapper.reservationToSimpleResponseDto(updatedReservation), HttpStatus.OK);
     }
 

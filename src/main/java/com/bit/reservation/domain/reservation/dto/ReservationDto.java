@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 public class ReservationDto {
@@ -16,8 +17,8 @@ public class ReservationDto {
     @AllArgsConstructor
     public static class PostDto {
 
-        //TODO 유효성 패턴
         @NotBlank
+        @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}$", message = "잘못된 날짜 형식입니다.")
         private String dateTime;
 
         @NotBlank
@@ -34,7 +35,10 @@ public class ReservationDto {
     @AllArgsConstructor
     public static class PatchDto {
         private Long reservationId;
+
+        @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}$", message = "잘못된 날짜 형식입니다.")
         private String dateTime;
+
         private String subject;
         private String clientRequest;
         private String doctorName;
@@ -165,6 +169,7 @@ public class ReservationDto {
     public static class PatchDtoForHospital {
         private Long reservationId;
         private String hospitalMemo;
+        private Long doctorId;
         private ReservationStatus reservationStatus;
     }
 
@@ -184,6 +189,7 @@ public class ReservationDto {
         private ReservationStatus reservationStatus;
         private ClientInfo clientInfo;
         private HospitalInfo hospitalInfo;
+        private boolean quotation;
 
         public String getReservationStatus() {
             return reservationStatus.getStatus();

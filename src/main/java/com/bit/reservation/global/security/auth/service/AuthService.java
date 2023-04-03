@@ -40,7 +40,7 @@ public class AuthService {
     private final CustomAuthorityUtils authorityUtils;
 
     public void logout(String accessToken) {
-        String email = userService.getLoginUser().getEmail();
+        String email = userService.checkUser().getEmail();
         String key = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         String token = accessToken.replace("Bearer ", "");
         Long atTime = jwtTokenizer.getExpiration(token, key);

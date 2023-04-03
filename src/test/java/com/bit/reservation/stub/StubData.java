@@ -1,5 +1,6 @@
 package com.bit.reservation.stub;
 
+import com.bit.reservation.domain.estimate.entity.Estimate;
 import com.bit.reservation.domain.hospital.entity.Doctor;
 import com.bit.reservation.domain.hospital.entity.Hospital;
 import com.bit.reservation.domain.hospital.entity.HospitalNotice;
@@ -37,7 +38,6 @@ public class StubData {
                 .school("학교이름")
                 .career("경력")
                 .medicalSubject(List.of("진료과목"))
-                .picture("사진")
                 .hospital(getHospital())
                 .build();
     }
@@ -84,12 +84,23 @@ public class StubData {
                 .breakStartTime("12:00:00")
                 .breakEndTime("13:00:00")
                 .intro("병원소개")
-                .hospitalPicture("사진")
                 .hospitalStatus(HospitalStatus.WAITING)
+                .hospitalLevel(HospitalLevel.FAMILY)
                 .build();
 
         hospital.setCreatedAt(LocalDateTime.now());
         hospital.setModifiedAt(LocalDateTime.now());
         return hospital;
+    }
+
+    public static Estimate getEstimate() {
+        return Estimate.builder()
+                .estimateId(1L)
+                .estimateDate("2023-03")
+                .numberOfReservations(1)
+                .totalAmount(2000)
+                .reservations(List.of(StubData.getReservation()))
+                .hospital(StubData.getHospital())
+                .build();
     }
 }

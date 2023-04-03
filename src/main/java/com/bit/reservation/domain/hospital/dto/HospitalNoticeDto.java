@@ -12,7 +12,6 @@ public class HospitalNoticeDto {
     @AllArgsConstructor
     public static class BasicDto {
 
-
         private Long hospitalNoticeId;
 
         @NotBlank(message = "제목은 공란이 아니어야 합니다.")

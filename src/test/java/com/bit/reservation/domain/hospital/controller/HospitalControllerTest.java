@@ -93,7 +93,6 @@ class HospitalControllerTest {
                 .breakStartTime(hospital.getBreakStartTime())
                 .breakEndTime(hospital.getBreakEndTime())
                 .intro(hospital.getIntro())
-                .hospitalPicture(hospital.getHospitalPicture())
                 .telNum(hospital.getTelNum())
                 .hospitalStatus(hospital.getHospitalStatus())
                 .build();
@@ -262,7 +261,6 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.data.breakStartTime").value(hospital.getBreakStartTime()))
                 .andExpect(jsonPath("$.data.breakEndTime").value(hospital.getBreakEndTime()))
                 .andExpect(jsonPath("$.data.intro").value(hospital.getIntro()))
-                .andExpect(jsonPath("$.data.hospitalPicture").value(hospital.getHospitalPicture()))
                 .andExpect(jsonPath("$.data.telNum").value(hospital.getTelNum()))
                 .andExpect(jsonPath("$.data.hospitalStatus").value(hospital.getHospitalStatus().getStatus()))
                 .andDo(document("get-hospital",
@@ -281,7 +279,6 @@ class HospitalControllerTest {
                                 fieldWithPath("data.breakStartTime").description("휴식시간시간"),
                                 fieldWithPath("data.breakEndTime").description("휴식종료시간"),
                                 fieldWithPath("data.intro").description("병원소개"),
-                                fieldWithPath("data.hospitalPicture").description("병원사진"),
                                 fieldWithPath("data.telNum").description("전화번호"),
                                 fieldWithPath("data.hospitalStatus").description("병원상태")
                         ))
@@ -295,7 +292,7 @@ class HospitalControllerTest {
         List<Hospital> list = List.of(hospital);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Hospital> pages = new PageImpl<>(list, pageable, list.size());
-        given(service.getHospitals(Mockito.any(Pageable.class), Mockito.anyString(), Mockito.anyString())).willReturn(pages);
+        given(service.getHospitals(Mockito.any(Pageable.class), Mockito.anyString())).willReturn(pages);
         given(mapper.hospitalsToResponseDto(Mockito.anyList())).willReturn(List.of(responseDto));
 
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -322,7 +319,6 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.data[0].breakStartTime").value(hospital.getBreakStartTime()))
                 .andExpect(jsonPath("$.data[0].breakEndTime").value(hospital.getBreakEndTime()))
                 .andExpect(jsonPath("$.data[0].intro").value(hospital.getIntro()))
-                .andExpect(jsonPath("$.data[0].hospitalPicture").value(hospital.getHospitalPicture()))
                 .andExpect(jsonPath("$.data[0].telNum").value(hospital.getTelNum()))
                 .andExpect(jsonPath("$.data[0].hospitalStatus").value(hospital.getHospitalStatus().getStatus()))
                 .andExpect(jsonPath("$.pageInfo.page").value(1))
@@ -350,7 +346,6 @@ class HospitalControllerTest {
                                 fieldWithPath("data[].breakStartTime").description("휴식시작시간"),
                                 fieldWithPath("data[].breakEndTime").description("휴식종료시간"),
                                 fieldWithPath("data[].intro").description("병원소개"),
-                                fieldWithPath("data[].hospitalPicture").description("병원사진"),
                                 fieldWithPath("data[].telNum").description("전화번호"),
                                 fieldWithPath("data[].hospitalStatus").description("병원상태"),
                                 fieldWithPath("pageInfo.page").description("현재 페이지"),

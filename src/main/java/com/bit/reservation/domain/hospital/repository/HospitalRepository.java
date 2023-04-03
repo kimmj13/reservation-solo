@@ -23,5 +23,4 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     Page<Hospital> findByHospitalStatus(Pageable pageable, HospitalStatus hospitalStatus);
     Optional<Hospital> findByEmail(String email);
 
-    List<Hospital> findByNameContaining(String keyword);
 }

@@ -6,26 +6,19 @@ import com.bit.reservation.domain.user.service.UserService;
 import com.bit.reservation.global.exception.BusinessLogicException;
 import com.bit.reservation.global.exception.ExceptionCode;
 import com.bit.reservation.global.security.utils.CustomAuthorityUtils;
+import com.bit.reservation.global.status.HospitalLevel;
 import com.bit.reservation.global.status.HospitalStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -41,6 +34,7 @@ public class HospitalService {
         verifiedUser(hospital.getEmail());
         hospital.setPassword(passwordEncoder.encode(hospital.getPassword()));
         hospital.setHospitalStatus(HospitalStatus.WAITING);
+        hospital.setHospitalLevel(HospitalLevel.FAMILY);
         List<String> roles = authorityUtils.createRoles(hospital.getEmail(), true);
         hospital.setRoles(roles);
         return hospitalRepository.save(hospital);
@@ -48,7 +42,7 @@ public class HospitalService {
 
     public Hospital updateHospital(Hospital hospital) {
         Hospital findHospital = existsHospital(hospital.getHospitalId());
-        checkJwtAndUser(hospital.getHospitalId());
+        checkJwtAndHospital(hospital.getHospitalId());
 
         Optional.ofNullable(hospital.getPassword())
                 .ifPresent(password -> findHospital.setPassword(passwordEncoder.encode(password)));
@@ -77,15 +71,17 @@ public class HospitalService {
     }
 
     public void deleteHospital(long hospitalId) {
-        Hospital hospital = checkJwtAndUser(hospitalId);
+        Hospital hospital = checkJwtAndHospital(hospitalId);
         //병원 탈퇴시 예약은 삭제 X
-        hospital.getReservations().forEach(reservation -> {
-            reservation.setHospital(null);
-            reservation.setDoctor(null);
-            reservation.setQuitHospitalInfo(
-                    List.of(hospital.getName(), hospital.getTelNum(), reservation.getDoctor().getName()));
-        });
-        hospitalRepository.delete(hospital);
+//        hospital.getReservations().forEach(reservation -> {
+//            reservation.setHospital(null);
+//            reservation.setDoctor(null);
+//            reservation.setQuitHospitalInfo(
+//                    List.of(hospital.getName(), hospital.getTelNum()));
+//        });
+//        hospitalRepository.delete(hospital);
+        hospital.setHospitalStatus(HospitalStatus.QUIT);
+        hospitalRepository.save(hospital);
     }
 
     public Hospital getHospital(long hospitalId) {
@@ -94,9 +90,10 @@ public class HospitalService {
         return hospitalRepository.save(hospital);
     }
 
-    public Page<Hospital> getHospitals(Pageable pageable, String status, String sort) {
-        pageable = settingPageable(pageable, sort);
+    public Page<Hospital> getHospitals(Pageable pageable, String status) {
         Page<Hospital> pages;
+
+        pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), pageable.getSort());
         //서비스 관리자 - 모든 병원 조회 허용 (waiting, quit 포함)
         if (userService.isServiceAdmin()) {
             pages = hospitalRepository.findByHospitalStatus(pageable,
@@ -108,14 +105,7 @@ public class HospitalService {
         return pages;
     }
 
-    public Pageable settingPageable(Pageable pageable, String sort) {
-        if (sort != null && sort.equals("views")) {
-            return PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), Sort.by("views").descending());
-        }
-        return PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize());
-    }
-
-    private Hospital existsHospital(long hospitalId) {
+    public Hospital existsHospital(long hospitalId) {
         return hospitalRepository.findById(hospitalId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.HOSPITAL_NOT_FOUND));
     }
@@ -127,23 +117,33 @@ public class HospitalService {
         }
     }
 
-    public Hospital getLoginHospital() {
+    private Hospital getLoginHospital() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return hospitalRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.HOSPITAL_NOT_FOUND));
     }
 
-    //본인만 접근 허용
-    public Hospital checkJwtAndUser(long hospitalId) {
+    //서비스 관리자 + 본인만 접근 허용
+    public Hospital checkJwtAndHospital(long hospitalId) {
+        if (!userService.isServiceAdmin()) {
+            Hospital hospital = getLoginHospital();
+            if (hospital.getHospitalId() != hospitalId || hospital.getHospitalStatus().equals(HospitalStatus.QUIT)) {
+                throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
+            }
+        }
+        return existsHospital(hospitalId);
+    }
+
+    public Hospital checkHospital() {
         Hospital hospital = getLoginHospital();
-        if (hospital.getHospitalId() != hospitalId) {
+        if (hospital.getHospitalStatus().equals(HospitalStatus.QUIT)) {
             throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
         }
         return hospital;
     }
 
     public void updateHospitalRoles(Long hospitalId, String status) {
-        Hospital hospital = getHospital(hospitalId);
+        Hospital hospital = existsHospital(hospitalId);
         if (status.equals("normal")) {
             hospital.setRoles(authorityUtils.acceptedHospital());
             if (hospital.getHospitalStatus() == HospitalStatus.WAITING) {
@@ -173,13 +173,13 @@ public class HospitalService {
 
     /*
     * 영업시간, 휴식시간에 따라 병원 상태 업데이트
-    * 주기: 매일 8 ~ 20시, 10분 간격
+    * 주기: 매일 8 ~ 20시, 30분 간격
     * */
-    @Scheduled(cron = "0 0/10 8-20 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0/30 8-20 * * *", zone = "Asia/Seoul")
     public void updateHospitalStatus() {
         List<Hospital> all = hospitalRepository.findAll();
         String time = LocalTime.now().toString();
-        log.info("병원 영업 상태 업데이트 [every 10M]: {}", time);
+        log.info("병원 영업 상태 업데이트 [every 30M]: {}", time);
 
         all.forEach(hospital -> {
             if (hospital.getRoles().contains("OK")) {

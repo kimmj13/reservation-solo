@@ -24,7 +24,7 @@ public class DoctorService {
     private final HospitalService hospitalService;
 
     public Doctor createDoctor(Doctor doctor, Long hospitalId) {
-        Hospital hospital = hospitalService.checkJwtAndUser(hospitalId);
+        Hospital hospital = hospitalService.checkJwtAndHospital(hospitalId);
 
         // 해당 병원에 동일한 이름 불가
         boolean match = hospital.getDoctors().stream().anyMatch(dc -> dc.getName().equals(doctor.getName()));

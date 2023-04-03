@@ -40,11 +40,22 @@ public class HospitalDto {
         @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "잘못된 전화번호 형식입니다.")
         private String telNum;
 
-        //TODO: 패턴 추가
+        @NotBlank
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String openingTime;
+
+        @NotBlank
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String closingTime;
+
+        @NotBlank
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String breakStartTime;
+
+        @NotBlank
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String breakEndTime;
+
         private String intro;
     }
 
@@ -73,10 +84,18 @@ public class HospitalDto {
         @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "잘못된 전화번호 형식입니다.")
         private String telNum;
 
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String openingTime;
+
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String closingTime;
+
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String breakStartTime;
+
+        @Pattern(regexp = "^\\d{2}:\\d{2}:\\d{2}$", message = "잘못된 시간 형식입니다.")
         private String breakEndTime;
+
         private String intro;
     }
 
@@ -96,7 +115,6 @@ public class HospitalDto {
         private String breakStartTime;
         private String breakEndTime;
         private String intro;
-        private String hospitalPicture;
         private String telNum;
         private HospitalStatus hospitalStatus;
 

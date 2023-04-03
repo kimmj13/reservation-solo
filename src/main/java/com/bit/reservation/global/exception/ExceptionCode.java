@@ -48,6 +48,11 @@ public enum ExceptionCode {
     NOTICE_CHECK_EXISTS(409, "Notice Check exists"),
     NOTICE_EXISTS(409, "Notice exists"),
 
+    ESTIMATE_NOT_PATCHED(403, "Estimate not patched"),
+    ESTIMATE_EXISTS(403, "Estimate exists"),
+    ESTIMATE_NOT_FOUND(404, "Estimate Not Found"),
+    ESTIMATE_STATUS_EXISTS(409, "Estimate status exists"),
+    ESTIMATE_CHECK_EXISTS(409, "Estimate Check exists"),
 
     RATE_NOT_PATCHED(403, "Rate not patched"),
     RATE_NOT_FOUND(404, "Rate Not Found"),
@@ -55,6 +60,7 @@ public enum ExceptionCode {
     RATE_CHECK_EXISTS(409, "Rate Check exists"),
 
     RESERVATION_NOT_PATCHED(403, "Reservation not patched"),
+    RESERVATION_NOT_DONE(403, "Reservation not done"),
     RESERVATION_NOT_FOUND(404, "Reservation Not Found"),
     RESERVATION_STATUS_EXISTS(409, "Reservation status exists"),
     RESERVATION_CHECK_EXISTS(409, "Reservation Check exists");

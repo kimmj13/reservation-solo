@@ -31,16 +31,16 @@ public class HospitalRateService {
     private final HospitalRateRepository repository;
 
     public HospitalRate createRate(HospitalRate rate, Long reservationId) {
-        User user = userService.getLoginUser();
+        User user = userService.checkUser();
         Reservation reservation = reservationService.findClientReservation(reservationId, user.getUserId());
 
         if (reservation.getHospitalRate() != null) {
             throw new BusinessLogicException(ExceptionCode.RATE_EXISTS);
         }
-        //TODO reservation 상태가 done 일때 후기 등록 가능
-//        else if (reservation.getReservationStatus() != ReservationStatus.DONE) {
-//            throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
-//        }
+        // reservation 상태가 done 일때 후기 등록 가능
+        else if (reservation.getReservationStatus() != ReservationStatus.DONE) {
+            throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
+        }
         rate.setUser(user);
         rate.setReservation(reservation);
         rate.setHospital(reservation.getHospital());
@@ -87,7 +87,7 @@ public class HospitalRateService {
     }
 
     private HospitalRate verifiedUserRate(Long hospitalRateId) {
-        User user = userService.getLoginUser();
+        User user = userService.checkUser();
         HospitalRate hospitalRate = existsRate(hospitalRateId);
         if (hospitalRate.getUser() != user) {
             throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);

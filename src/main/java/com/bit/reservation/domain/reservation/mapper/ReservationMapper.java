@@ -18,15 +18,14 @@ public interface ReservationMapper {
     @Mapping(target = "doctor", source = "doctor")
     Reservation postDtoToReservation(ReservationDto.PostDto postDto, Doctor doctor);
 
-    @Mapping(target = "doctor", source = "doctor")
-    Reservation patchDtoToReservation(ReservationDto.PatchDto patchDto, Doctor doctor);
+    Reservation patchDtoToReservation(ReservationDto.PatchDto patchDto);
 
-    @Mapping(target = "doctorName", expression = "java(reservation.getHospital() != null ? reservation.getDoctor().getName() : reservation.getQuitHospitalInfo().get(2))")
+    @Mapping(target = "doctorName", expression = "java(reservation.getHospital() != null && reservation.getDoctor() != null ? reservation.getDoctor().getName() : null)")
     @Mapping(target = "hospitalInfo", expression = "java(settingHospitalInfo(reservation))")
     ReservationDto.ClientResponseDto reservationToClientResponseDto(Reservation reservation);
 
-    @Mapping(target = "doctorId", expression = "java(reservation.getDoctor().getDoctorId())")
-    @Mapping(target = "doctorName", expression = "java(reservation.getDoctor().getName())")
+    @Mapping(target = "doctorId", expression = "java(reservation.getDoctor() != null ? reservation.getDoctor().getDoctorId() : null)")
+    @Mapping(target = "doctorName", expression = "java(reservation.getDoctor() != null ? reservation.getDoctor().getName() : null)")
     @Mapping(target = "clientInfo", expression = "java(settingClientInfo(reservation))")
     ReservationDto.HospitalResponseDto reservationToHospitalResponseDto(Reservation reservation);
 
@@ -66,7 +65,7 @@ public interface ReservationMapper {
 
             list.add(ReservationDto.ListHospitalResponseDto.builder()
                     .doctorId(doctor != null ? doctor.getDoctorId() : null)
-                    .doctorName(doctor != null ? doctor.getName() : reservation.getQuitHospitalInfo().get(2))
+                    .doctorName(doctor != null ? doctor.getName() : null)
                     .reservationId(reservation.getReservationId())
                     .dateTime(reservation.getDateTime())
                     .medicalSubject(reservation.getSubject())
@@ -91,13 +90,14 @@ public interface ReservationMapper {
 
             list.add(ReservationDto.AdminListHospitalResponseDto.builder()
                     .doctorId(doctor != null ? doctor.getDoctorId() : null)
-                    .doctorName(doctor != null ? doctor.getName() : reservation.getQuitHospitalInfo().get(2))
+                    .doctorName(doctor != null ? doctor.getName() : null)
                     .reservationId(reservation.getReservationId())
                     .dateTime(reservation.getDateTime())
                     .medicalSubject(reservation.getSubject())
                     .reservationStatus(reservation.getReservationStatus())
                     .clientInfo(settingClientInfo(reservation))
                     .hospitalInfo(settingHospitalInfo(reservation))
+                    .quotation(reservation.isQuotation())
                     .build());
         }
         return list;

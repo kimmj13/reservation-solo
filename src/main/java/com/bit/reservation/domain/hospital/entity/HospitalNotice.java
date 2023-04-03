@@ -22,7 +22,7 @@ public class HospitalNotice {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "HOSPITAL_ID")
     private Hospital hospital;
 

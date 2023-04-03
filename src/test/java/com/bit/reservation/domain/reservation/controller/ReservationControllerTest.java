@@ -150,7 +150,7 @@ class ReservationControllerTest {
 
         actions.andDo(print());
         actions.andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.reservationId").value(1L)) TODO:왜.. 왜 empty??
+//                .andExpect(jsonPath("$.reservationId").value(1L)) TODO
                 .andDo(document("post-reservation",
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
@@ -166,8 +166,8 @@ class ReservationControllerTest {
                                 fieldWithPath("doctorName").description("의사 이름"))
                         )
 //                        responseFields(List.of(fieldWithPath("reservationId").description("예약 식별자"))
-                        )
-                );
+                ));
+
     }
 
     @DisplayName("예약 수정 테스트")
@@ -186,8 +186,8 @@ class ReservationControllerTest {
         String requestBody = gson.toJson(patchDto);
 
         given(doctorService.findDoctorByName(Mockito.anyString())).willReturn(StubData.getDoctor());
-        given(mapper.patchDtoToReservation(Mockito.any(ReservationDto.PatchDto.class), Mockito.any(Doctor.class))).willReturn(reservation);
-        given(service.updateReservation(Mockito.any(Reservation.class))).willReturn(reservation);
+        given(mapper.patchDtoToReservation(Mockito.any(ReservationDto.PatchDto.class))).willReturn(reservation);
+        given(service.updateReservation(Mockito.any(Reservation.class), Mockito.anyString())).willReturn(reservation);
         given(mapper.reservationToSimpleResponseDto(Mockito.any(Reservation.class))).willReturn(new ReservationDto.SimpleResponseDto(1L));
 
         //then
@@ -513,11 +513,12 @@ class ReservationControllerTest {
                 .reservationId(id)
                 .hospitalMemo(reservation.getHospitalMemo())
                 .reservationStatus(reservation.getReservationStatus())
+                .doctorId(1L)
                 .build();
         String requestBody = gson.toJson(dto);
 
         given(mapper.patchDtoForHospitalToReservation(Mockito.any(ReservationDto.PatchDtoForHospital.class))).willReturn(reservation);
-        given(service.updateReservationByHospital(Mockito.anyLong(), Mockito.any(Reservation.class))).willReturn(reservation);
+        given(service.updateReservationByHospital(Mockito.anyLong(), Mockito.any(Reservation.class), Mockito.anyLong())).willReturn(reservation);
         given(mapper.reservationToSimpleResponseDto(Mockito.any(Reservation.class))).willReturn(new ReservationDto.SimpleResponseDto(1L));
 
         ResultActions actions = mockMvc.perform(patch("/api/reservation/{reservationId}/hospital/{hospitalId}", id, id)
@@ -540,6 +541,7 @@ class ReservationControllerTest {
                         requestFields(List.of(
                                         fieldWithPath("reservationId").description("예약 식별자"),
                                         fieldWithPath("hospitalMemo").description("병원 메모"),
+                                        fieldWithPath("doctorId").description("의사 식별자"),
                                         fieldWithPath("reservationStatus").description("예약 상태 결정 (approval/reject)")
                                 )
                         ),
@@ -592,6 +594,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.data[0].hospitalInfo.hospitalId").value(reservation.getHospital().getHospitalId()))
                 .andExpect(jsonPath("$.data[0].hospitalInfo.name").value(reservation.getHospital().getName()))
                 .andExpect(jsonPath("$.data[0].hospitalInfo.telNum").value(reservation.getHospital().getTelNum()))
+                .andExpect(jsonPath("$.data[0].quotation").value(reservation.isQuotation()))
                 .andExpect(jsonPath("$.pageInfo.page").value(1))
                 .andExpect(jsonPath("$.pageInfo.size").value(10))
                 .andExpect(jsonPath("$.pageInfo.totalElements").value(1))
@@ -623,6 +626,7 @@ class ReservationControllerTest {
                                 fieldWithPath("data[].hospitalInfo.hospitalId").description("병원 식별자"),
                                 fieldWithPath("data[].hospitalInfo.name").description("병원 이름"),
                                 fieldWithPath("data[].hospitalInfo.telNum").description("병원 전화번호"),
+                                fieldWithPath("data[].quotation").description("견적 여부"),
                                 fieldWithPath("pageInfo.page").description("현재 페이지"),
                                 fieldWithPath("pageInfo.size").description("한 페이지당 요소 개수"),
                                 fieldWithPath("pageInfo.totalElements").description("총 요소 개수"),

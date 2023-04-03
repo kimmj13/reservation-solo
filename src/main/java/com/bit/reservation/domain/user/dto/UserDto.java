@@ -70,7 +70,6 @@ public class UserDto {
         private Long userId;
     }
 
-    //TODO : 항목 좀더 생각해보기
     //특정 회원 조회
     @NoArgsConstructor
     @AllArgsConstructor

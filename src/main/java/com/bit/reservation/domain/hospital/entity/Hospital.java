@@ -2,6 +2,7 @@ package com.bit.reservation.domain.hospital.entity;
 
 import com.bit.reservation.domain.reservation.entity.Reservation;
 import com.bit.reservation.global.audit.Auditable;
+import com.bit.reservation.global.status.HospitalLevel;
 import com.bit.reservation.global.status.HospitalStatus;
 import lombok.*;
 
@@ -40,25 +41,22 @@ public class Hospital extends Auditable {
     private String telNum;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> medicalSubject;
+    private List<String> medicalSubject = new ArrayList<>();
 
-    @Column
+    @Column(nullable = false)
     private String openingTime;
 
-    @Column
+    @Column(nullable = false)
     private String closingTime;
 
-    @Column
+    @Column(nullable = false)
     private String breakStartTime;
 
-    @Column
+    @Column(nullable = false)
     private String breakEndTime;
 
     @Column
     private String intro;
-
-    @Column
-    private String hospitalPicture;
 
     @Enumerated(EnumType.STRING)
     private HospitalStatus hospitalStatus;
@@ -66,13 +64,19 @@ public class Hospital extends Auditable {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-    private Integer views;
+    private int views;
+
+    @Enumerated(EnumType.STRING)
+    private HospitalLevel hospitalLevel;
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
     private List<Doctor> doctors = new ArrayList<>();
 
     @OneToMany(mappedBy = "hospital")
     private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    private List<HospitalNotice> hospitalNotice = new ArrayList<>();
 
     public void addDoctor(Doctor doctor) {
         doctor.setHospital(this);

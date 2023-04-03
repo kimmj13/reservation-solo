@@ -81,11 +81,12 @@ public class UserService {
     public void deleteUser(long userId) {
         User user = checkJwtAndUser(userId);
         //회원 탈퇴시 예약은 삭제 X
-        user.getReservations().forEach(reservation -> {
-            reservation.setUser(null);
-            reservation.setQuitClientInfo(List.of(user.getUserName(), user.getAge().toString(), user.getProfileImage().getImage()));
-        });
-        userRepository.delete(user);
+//        user.getReservations().forEach(reservation -> {
+//            reservation.setUser(null);
+//            reservation.setQuitClientInfo(List.of(user.getUserName(), user.getAge().toString(), user.getProfileImage().getImage()));
+//        });
+        user.setUserStatus(UserStatus.QUIT);
+        userRepository.save(user);
     }
 
     public User getUser(long userId) {
@@ -93,9 +94,6 @@ public class UserService {
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
-    //todo : tab 옵션 생각해보기
-    /*
-    * */
     public Page<User> getAllUser(Pageable pageable) {
         pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize());
          return userRepository.findAll(pageable);
@@ -112,16 +110,26 @@ public class UserService {
         }
     }
 
-    public User getLoginUser() {
+    private User getLoginUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
-    //본인만 접근 허용
+    //서비스관리자 + 본인만 접근 허용
     public User checkJwtAndUser(long userId) {
+        if (!isServiceAdmin()) {
+            User user = getLoginUser();
+            if (user.getUserId() != userId || user.getUserStatus().equals(UserStatus.QUIT)) {
+                throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
+            }
+        }
+        return existUser(userId);
+    }
+
+    public User checkUser() {
         User user = getLoginUser();
-        if (user.getUserId() != userId) {
+        if (user.getUserStatus().equals(UserStatus.QUIT)) {
             throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
         }
         return user;
