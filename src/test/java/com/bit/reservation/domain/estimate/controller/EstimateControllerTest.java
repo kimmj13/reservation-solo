@@ -139,7 +139,7 @@ class EstimateControllerTest {
                         requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                         pathParameters(parameterWithName("hospitalId").description("병원 식별자")),
                         requestFields(List.of(
-                                fieldWithPath("estimateDate").description("견적 날짜")
+                                fieldWithPath("estimateDate").description("견적 날짜 (형식: YYYY-MM)")
                         )),
                         responseFields(List.of(fieldWithPath("estimateId").description("견적 식별자"))
                         ))
@@ -216,10 +216,10 @@ class EstimateControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지").optional(),
-                                parameterWithName("size").description("한 페이지당 요소 개수").optional(),
-                                parameterWithName("estimateDate").description("견적 날짜"),
-                                parameterWithName("hospitalId").description("병원 식별자")
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional(),
+                                parameterWithName("estimateDate").description("[선택] 견적 날짜"),
+                                parameterWithName("hospitalId").description("[선택] 병원 식별자")
                         ),
                         responseFields(List.of(
                                         fieldWithPath("data[].estimateId").description("견적 식별자"),
@@ -266,9 +266,9 @@ class EstimateControllerTest {
                         requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                         pathParameters(parameterWithName("hospitalId").description("병원 식별자")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지").optional(),
-                                parameterWithName("size").description("한 페이지당 요소 개수").optional(),
-                                parameterWithName("estimateDate").description("견적 날짜")
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional(),
+                                parameterWithName("estimateDate").description("[선택] 견적 날짜")
                         ),
                         responseFields(List.of(
                                         fieldWithPath("data[].estimateId").description("견적 식별자"),

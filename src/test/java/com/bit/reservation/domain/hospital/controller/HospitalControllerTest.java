@@ -140,16 +140,16 @@ class HospitalControllerTest {
                         requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
-                                fieldWithPath("password").description("비밀번호"),
+                                fieldWithPath("password").description("비밀번호 (영문, 특수문자, 숫자 포함 8-16자 이내)"),
                                 fieldWithPath("name").description("병원이름"),
                                 fieldWithPath("address").description("병원주소"),
                                 fieldWithPath("age").description("업력"),
                                 fieldWithPath("medicalSubject").description("진료과목"),
                                 fieldWithPath("telNum").description("전화번호"),
-                                fieldWithPath("openingTime").description("영업시작시간"),
-                                fieldWithPath("closingTime").description("영업종료시간"),
-                                fieldWithPath("breakStartTime").description("휴식시작시간"),
-                                fieldWithPath("breakEndTime").description("휴식종료시간"),
+                                fieldWithPath("openingTime").description("영업시작시간 (형식: hh:mm:ss)"),
+                                fieldWithPath("closingTime").description("영업종료시간 (형식: hh:mm:ss)"),
+                                fieldWithPath("breakStartTime").description("휴식시작시간 (형식: hh:mm:ss)"),
+                                fieldWithPath("breakEndTime").description("휴식종료시간 (형식: hh:mm:ss)"),
                                 fieldWithPath("intro").description("병원소개")
                         ),
                         responseFields(
@@ -202,16 +202,16 @@ class HospitalControllerTest {
                         pathParameters(parameterWithName("hospitalId").description("병원 식별자")),
                         requestFields(List.of(
                                 fieldWithPath("hospitalId").ignored(),
-                                fieldWithPath("password").description("비밀번호"),
+                                fieldWithPath("password").description("비밀번호 (영문, 특수문자, 숫자 포함 8-16자 이내)"),
                                 fieldWithPath("name").description("병원이름"),
                                 fieldWithPath("address").description("병원주소"),
                                 fieldWithPath("age").description("업력"),
                                 fieldWithPath("medicalSubject").description("진료과목"),
                                 fieldWithPath("telNum").description("전화번호"),
-                                fieldWithPath("openingTime").description("영업시작시간"),
-                                fieldWithPath("closingTime").description("영업종료시간"),
-                                fieldWithPath("breakStartTime").description("휴식시작시간"),
-                                fieldWithPath("breakEndTime").description("휴식종료시간"),
+                                fieldWithPath("openingTime").description("영업시작시간 (형식: hh:mm:ss)"),
+                                fieldWithPath("closingTime").description("영업종료시간 (형식: hh:mm:ss)"),
+                                fieldWithPath("breakStartTime").description("휴식시작시간 (형식: hh:mm:ss)"),
+                                fieldWithPath("breakEndTime").description("휴식종료시간 (형식: hh:mm:ss)"),
                                 fieldWithPath("intro").description("병원소개")
                         )),
                         responseFields(fieldWithPath("hospitalId").description("병원 식별자"))
@@ -330,10 +330,10 @@ class HospitalControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("병원 액세스 토큰")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지").optional(),
-                                parameterWithName("size").description("한 페이지당 요소 개수").optional(),
-                                parameterWithName("status").description("병원 상태"),
-                                parameterWithName("sort").description("정렬 (views)")
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional(),
+                                parameterWithName("status").description("[선택] 병원 상태 (옵션: 준비중(waiting)/영업중(active)/휴식중(break)/영업종료(closed)/폐쇄(quit))"),
+                                parameterWithName("sort").description("[선택] 정렬 (옵션: 조회수순(views))")
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].hospitalId").description("병원 식별자"),
@@ -374,7 +374,7 @@ class HospitalControllerTest {
                 .andDo(document("put-hospitalRoles",
                         pathParameters(
                                 parameterWithName("hospitalId").description("병원 식별자"),
-                                parameterWithName("status").description("등록할 상태 (normal/abnormal)")
+                                parameterWithName("status").description("등록할 상태 (승인: normal / 거절: abnormal)")
                         )
                 ));
     }

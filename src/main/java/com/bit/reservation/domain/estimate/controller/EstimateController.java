@@ -75,7 +75,7 @@ public class EstimateController {
     //병원이 자신의 견적 개별 조회
     @GetMapping("/{estimate-id}/hospital/{hospital-id}")
     public ResponseEntity getHospitalEstimate(@PathVariable("estimate-id") @Positive Long estimateId,
-                                      @PathVariable("hospital-id") @Positive Long hospitalId) {
+                                              @PathVariable("hospital-id") @Positive Long hospitalId) {
         Estimate estimate = service.findHospitalEstimate(estimateId, hospitalId);
         return new ResponseEntity<>(mapper.estimateToResponseDto(estimate), HttpStatus.OK);
     }

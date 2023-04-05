@@ -222,8 +222,8 @@ class DoctorControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("액세스 토큰")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지"),
-                                parameterWithName("size").description("한 페이지당 요소 개수")
+                                parameterWithName("page").description("[필수] 현재 페이지"),
+                                parameterWithName("size").description("[필수] 한 페이지당 요소 개수")
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].doctorId").description("의사 식별자"),
@@ -268,8 +268,8 @@ class DoctorControllerTest {
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지").optional(),
-                                parameterWithName("size").description("한 페이지당 요소 개수").optional()
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional()
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].doctorId").description("의사 식별자"),

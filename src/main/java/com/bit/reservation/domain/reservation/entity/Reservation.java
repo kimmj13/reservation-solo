@@ -59,11 +59,11 @@ public class Reservation extends Auditable {
     @JoinColumn(name = "HOSPITAL_RATE_ID")
     private HospitalRate hospitalRate;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> quitHospitalInfo = new ArrayList<>();
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> quitClientInfo = new ArrayList<>();
+//    @ElementCollection(fetch = FetchType.LAZY)
+//    private List<String> quitHospitalInfo = new ArrayList<>();
+//
+//    @ElementCollection(fetch = FetchType.LAZY)
+//    private List<String> quitClientInfo = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "ESTIMATE_ID")

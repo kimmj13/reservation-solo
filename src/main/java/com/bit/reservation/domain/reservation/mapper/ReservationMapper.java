@@ -109,28 +109,30 @@ public interface ReservationMapper {
 
     default ReservationDto.ClientInfo settingClientInfo(Reservation reservation) {
         User user = reservation.getUser();
-        return user != null ? new ReservationDto.ClientInfo(
+//        return user != null ?
+        return new ReservationDto.ClientInfo(
                 user.getUserId(),
                 user.getUserName(),
                 user.getAge(),
-                user.getProfileImage().getImage()) :
-                new ReservationDto.ClientInfo(
-                        null, reservation.getQuitClientInfo().get(0),
-                        Integer.valueOf(reservation.getQuitClientInfo().get(1)),
-                        reservation.getQuitClientInfo().get(2)
-                );
+                user.getProfileImage().getImage());
+//                : new ReservationDto.ClientInfo(
+//                        null, reservation.getQuitClientInfo().get(0),
+//                        Integer.valueOf(reservation.getQuitClientInfo().get(1)),
+//                        reservation.getQuitClientInfo().get(2)
+//                );
     }
 
     default ReservationDto.HospitalInfo settingHospitalInfo(Reservation reservation) {
         Hospital hospital = reservation.getHospital();
-        return hospital != null ? new ReservationDto.HospitalInfo(
+//        return hospital != null ?
+        return new ReservationDto.HospitalInfo(
                 hospital.getHospitalId(),
                 hospital.getName(),
-                hospital.getTelNum()) :
-                new ReservationDto.HospitalInfo(
-                        null,
-                        reservation.getQuitHospitalInfo().get(0),
-                        reservation.getQuitHospitalInfo().get(1)
-                );
+                hospital.getTelNum());
+//                : new ReservationDto.HospitalInfo(
+//                        null,
+//                        reservation.getQuitHospitalInfo().get(0),
+//                        reservation.getQuitHospitalInfo().get(1)
+//                );
     }
 }

@@ -48,12 +48,13 @@ public interface HospitalRateMapper {
             responseDto.setUserId(user.getUserId());
             responseDto.setUserName(user.getUserName());
             responseDto.setUserProfileImage(user.getProfileImage().getImage());
-        } else {
-            List<String> quitClientInfo = hospitalRate.getReservation().getQuitClientInfo();
-            responseDto.setUserId(null);
-            responseDto.setUserName(quitClientInfo.get(0));
-            responseDto.setUserProfileImage(quitClientInfo.get(2));
         }
+//        else {
+//            List<String> quitClientInfo = hospitalRate.getReservation().getQuitClientInfo();
+//            responseDto.setUserId(null);
+//            responseDto.setUserName(quitClientInfo.get(0));
+//            responseDto.setUserProfileImage(quitClientInfo.get(2));
+//        }
 
         return responseDto;
     }

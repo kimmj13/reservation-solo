@@ -160,7 +160,7 @@ class ReservationControllerTest {
                                 parameterWithName("userId").description("회원 식별자")
                         ),
                         requestFields(List.of(
-                                fieldWithPath("dateTime").description("예약일자"),
+                                fieldWithPath("dateTime").description("예약일자 (형식: YYYY-MM-DD hh:mm)"),
                                 fieldWithPath("subject").description("진료과목"),
                                 fieldWithPath("clientRequest").description("고객 요청"),
                                 fieldWithPath("doctorName").description("의사 이름"))
@@ -208,7 +208,7 @@ class ReservationControllerTest {
                         pathParameters(parameterWithName("reservationId").description("예약 식별자")),
                         requestFields(List.of(
                                 fieldWithPath("reservationId").ignored(),
-                                fieldWithPath("dateTime").description("예약일자"),
+                                fieldWithPath("dateTime").description("예약일자 (형식: YYYY-MM-DD 00:00)"),
                                 fieldWithPath("subject").description("진료과목"),
                                 fieldWithPath("clientRequest").description("고객 요청"),
                                 fieldWithPath("doctorName").description("의사 이름"))
@@ -350,10 +350,10 @@ class ReservationControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("회 액세스 토큰")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지"),
-                                parameterWithName("size").description("한 페이지당 요소 개수"),
-                                parameterWithName("status").description("예약 상태"),
-                                parameterWithName("hospitalName").description("병원 이름")
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)"),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:15)"),
+                                parameterWithName("status").description("[선택] 예약 상태 (옵션: 대기중(waiting)/거절(reject)/승인(approval)/완료(done))"),
+                                parameterWithName("hospitalName").description("[선택] 병원 이름")
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].reservationId").description("예약 식별자"),
@@ -479,10 +479,10 @@ class ReservationControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("병원 액세스 토큰")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지"),
-                                parameterWithName("size").description("한 페이지당 요소 개수"),
-                                parameterWithName("status").description("예약 상태"),
-                                parameterWithName("userName").description("고객 이름")
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)"),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)"),
+                                parameterWithName("status").description("[선택] 예약 상태 (옵션: 대기중(waiting)/거절(reject)/승인(approval)/완료(done))"),
+                                parameterWithName("userName").description("[선택] 고객 이름")
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].doctorId").description("의사 식별자"),
@@ -604,13 +604,13 @@ class ReservationControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("관리자 액세스 토큰")),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지"),
-                                parameterWithName("size").description("한 페이지당 요소 개수"),
-                                parameterWithName("dateTime").description("예약 날짜"),
-                                parameterWithName("subject").description("진료과목"),
-                                parameterWithName("status").description("예약 상태"),
-                                parameterWithName("hospitalId").description("병원 식별자"),
-                                parameterWithName("userId").description("회원 식별자")
+                                parameterWithName("page").description("[필수] 현재 페이지"),
+                                parameterWithName("size").description("[필수] 한 페이지당 요소 개수"),
+                                parameterWithName("dateTime").description("[선택] 예약 날짜"),
+                                parameterWithName("subject").description("[선택] 진료과목"),
+                                parameterWithName("status").description("[선택] 예약 상태"),
+                                parameterWithName("hospitalId").description("[선택] 병원 식별자"),
+                                parameterWithName("userId").description("[선택] 회원 식별자")
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].doctorId").description("의사 식별자"),

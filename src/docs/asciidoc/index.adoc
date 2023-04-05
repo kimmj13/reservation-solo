@@ -12,8 +12,24 @@ _v1.0.0 2023.04_
 ***
 API 문서 개요
 
-    이 문서는 ~ 예약 애플리케이션입니다.
+    이 문서는 이용자와 병원간 예약을 도와주는 예약 웹애플리케이션에 대한 문서입니다.
     샘플 애플리케이션을 사용해보고자 하는 분들은 이 문서를 통해 API의 구체적인 사용방법을 알 수 있습니다.
+    JWT 토큰을 통한 인증을 구현하여 로그인시 Response Header로 Authorization과 Refresh가 발급됩니다.
+    Authorization는 Access token으로, 리소스에 접근하기시 Request Header에 Authorization을
+    포함하여 요청하여야 하며, Refresh는 Refresh token으로, Access token을 재발급하는데 사용됩니다.
+    * Access token 유효시간: 30분
+    * Refresh token 유효시간: 7일
+
+NOTE: [고객용], [병원용], [관리자용]으로 기재된 API는 해당 권한을 가진 사람만 접근이 가능합니다.
+서비스 관리자는 고객, 병원용 API에도 접근 가능하며 하기 이메일로 회원가입시 서비스 관리자 권한이 부여됩니다.
+
+* 관리자 권한 부여 계정 : admin@gmail.com
+
+---
+
+TIP: 하기 링크의 [Run in Postman] 버튼을 통해 포스트맨에서 사용해 볼 수 있습니다.
+
+* POSTMAN : https://documenter.getpostman.com/view/25988631/2s93RWQBuZ
 
 ***
 
@@ -43,7 +59,9 @@ include::{snippets}/sign-up/response-body.adoc[]
 .response-fields
 include::{snippets}/sign-up/response-fields.adoc[]
 
-=== 회원 정보 수정
+=== 회원 정보 수정 [고객용]
+NOTE: 회원 정보 수정은 userName, password 등 개별 항목으로 요청이 가능합니다.
+
 .curl-request
 include::{snippets}/patch-user/curl-request.adoc[]
 
@@ -74,9 +92,7 @@ include::{snippets}/patch-user/response-body.adoc[]
 .response-fields
 include::{snippets}/patch-user/response-fields.adoc[]
 
-NOTE: 회원 정보 수정은 userName, password 등 개별 항목으로 요청이 가능합니다.
-
-=== 회원 조회
+=== 회원 개별 조회 [ALL]
 .curl-request
 include::{snippets}/get-user/curl-request.adoc[]
 
@@ -101,7 +117,9 @@ include::{snippets}/get-user/response-body.adoc[]
 .response-fields
 include::{snippets}/get-user/response-fields.adoc[]
 
-=== 회원 탈퇴
+=== 회원 탈퇴 [고객용]
+NOTE: 회원 상태(userStatus)가 QUIT으로 변경됩니다.
+
 .curl-request
 include::{snippets}/delete-user/curl-request.adoc[]
 
@@ -126,7 +144,7 @@ include::{snippets}/delete-user/request-headers.adoc[]
 .response-body
 include::{snippets}/delete-user/response-body.adoc[]
 
-=== 회원 목록 조회 [서비스 관리자용]
+=== 모든 회원 목록 조회 [관리자용]
 .curl-request
 include::{snippets}/get-users/curl-request.adoc[]
 
@@ -180,7 +198,7 @@ include::{snippets}/post-hospital/response-body.adoc[]
 .response-fields
 include::{snippets}/post-hospital/response-fields.adoc[]
 
-=== 병원 정보 수정
+=== 병원 정보 수정 [병원용]
 
 .curl-request
 include::{snippets}/patch-hospital/curl-request.adoc[]
@@ -212,7 +230,7 @@ include::{snippets}/patch-hospital/response-body.adoc[]
 .response-fields
 include::{snippets}/patch-hospital/response-fields.adoc[]
 
-=== 병원 개별 조회
+=== 병원 개별 조회 [ALL]
 
 .curl-request
 include::{snippets}/get-hospital/curl-request.adoc[]
@@ -242,7 +260,10 @@ include::{snippets}/get-hospital/response-body.adoc[]
 include::{snippets}/get-hospital/response-fields.adoc[]
 
 
-=== 병원 목록 조회
+=== 병원 목록 조회 [ALL]
+NOTE: 병원 목록 조회시 고객 혹은 병원일 경우 병원상태(status)가 대기중(waiting), 폐쇄(quit)인 병원은 조회에서 제외되며,
+서비스 관리자일 경우 모든 병원이 조회됩니다.
+
 .curl-request
 include::{snippets}/get-hospitals/curl-request.adoc[]
 
@@ -270,10 +291,7 @@ include::{snippets}/get-hospitals/response-body.adoc[]
 .response-fields
 include::{snippets}/get-hospitals/response-fields.adoc[]
 
-NOTE: 병원 목록 조회시 고객 혹은 병원일 경우 병원상태가 waiting, quit인 병원은 조회에서 제외되며,
-서비스 관리자일 경우 모든 병원이 조회됩니다.
-
-=== 병원 탈퇴
+=== 병원 탈퇴 [병원용]
 .curl-request
 include::{snippets}/delete-hospital/curl-request.adoc[]
 
@@ -298,7 +316,11 @@ include::{snippets}/delete-hospital/request-headers.adoc[]
 .response-body
 include::{snippets}/delete-hospital/response-body.adoc[]
 
-=== 병원 상태 등록 [서비스 관리자용]
+=== ⭐병원에 대한 (승인/거절) [관리자용]⭐
+
+NOTE: 회원가입한 병원에 대한 승인/거절 기능
+(병원 승인시 병원 조회, 의사 CRUD, 예약 접수 가능)
+
 .curl-request
 include::{snippets}/put-hospitalRoles/curl-request.adoc[]
 
@@ -314,6 +336,9 @@ include::{snippets}/put-hospitalRoles/httpie-request.adoc[]
 .path-parameters
 include::{snippets}/put-hospitalRoles/path-parameters.adoc[]
 
+NOTE: 1. 'status' : normal -> ROLES에 OK 권한 추가,
+2. 'status' : abnormal -> HospitalStatus를 폐쇄(QUIT)로 변경
+
 .request-body
 include::{snippets}/put-hospitalRoles/request-body.adoc[]
 
@@ -321,6 +346,11 @@ include::{snippets}/put-hospitalRoles/request-body.adoc[]
 include::{snippets}/put-hospitalRoles/response-body.adoc[]
 
 == AuthController
+IMPORTANT: 로그인 API,
+[POST] http://localhost:8080/api/auth/login /
+[Request Body 항목] : email, password /
+[Response Header] : Authorization, Refresh
+
 === 로그아웃
 .curl-request
 include::{snippets}/logout/curl-request.adoc[]
@@ -368,8 +398,8 @@ include::{snippets}/reissue-token/response-body.adoc[]
 .response-headers
 include::{snippets}/reissue-token/response-headers.adoc[]
 
-== NoticeController
-=== 공지사항 등록
+== HospitalNoticeController
+=== 공지사항 등록 [병원용]
 .curl-request
 include::{snippets}/post-notice/curl-request.adoc[]
 
@@ -397,7 +427,7 @@ include::{snippets}/post-notice/response-body.adoc[]
 .response-fields
 include::{snippets}/post-notice/response-fields.adoc[]
 
-=== 공지사항 수정
+=== 공지사항 수정 [병원용]
 .curl-request
 include::{snippets}/patch-notice/curl-request.adoc[]
 
@@ -428,7 +458,7 @@ include::{snippets}/patch-notice/response-body.adoc[]
 .response-fields
 include::{snippets}/patch-notice/response-fields.adoc[]
 
-=== 공지사항 조회
+=== 공지사항 조회 [ALL]
 .curl-request
 include::{snippets}/get-notice/curl-request.adoc[]
 
@@ -453,7 +483,7 @@ include::{snippets}/get-notice/response-body.adoc[]
 .response-fields
 include::{snippets}/get-notice/response-fields.adoc[]
 
-=== 공지사항 목록 조회
+=== 공지사항 목록 조회 [ALL]
 .curl-request
 include::{snippets}/get-notices/curl-request.adoc[]
 
@@ -472,13 +502,16 @@ include::{snippets}/get-notices/path-parameters.adoc[]
 .request-body
 include::{snippets}/get-notices/request-body.adoc[]
 
+.request-parameters
+include::{snippets}/get-notices/request-parameters.adoc[]
+
 .response-body
 include::{snippets}/get-notices/response-body.adoc[]
 
 .response-fields
 include::{snippets}/get-notices/response-fields.adoc[]
 
-=== 공지사항 삭제
+=== 공지사항 삭제 [병원용]
 .curl-request
 include::{snippets}/delete-notice/curl-request.adoc[]
 
@@ -504,7 +537,9 @@ include::{snippets}/delete-notice/request-headers.adoc[]
 include::{snippets}/delete-notice/response-body.adoc[]
 
 == DoctorController
-=== 의사 등록
+NOTE: 서비스 관리자에 의해 승인된 병원만 해당 기능을 사용할 수 있습니다.
+
+=== 의사 등록 [병원용]
 .curl-request
 include::{snippets}/post-doctor/curl-request.adoc[]
 
@@ -535,7 +570,7 @@ include::{snippets}/post-doctor/response-body.adoc[]
 .response-fields
 include::{snippets}/post-doctor/response-fields.adoc[]
 
-=== 의사 수정
+=== 의사 수정 [병원용]
 
 .curl-request
 include::{snippets}/patch-doctor/curl-request.adoc[]
@@ -567,7 +602,7 @@ include::{snippets}/patch-doctor/response-body.adoc[]
 .response-fields
 include::{snippets}/patch-doctor/response-fields.adoc[]
 
-=== 의사 개별 조회
+=== 의사 개별 조회 [ALL]
 .curl-request
 include::{snippets}/get-doctor/curl-request.adoc[]
 
@@ -593,7 +628,7 @@ include::{snippets}/get-doctor/response-body.adoc[]
 include::{snippets}/get-doctor/response-fields.adoc[]
 
 
-=== 병원 의사 목록 조회
+=== 병원 의사 목록 조회 [ALL]
 .curl-request
 include::{snippets}/get-doctors/curl-request.adoc[]
 
@@ -618,7 +653,7 @@ include::{snippets}/get-doctors/response-body.adoc[]
 .response-fields
 include::{snippets}/get-doctors/response-fields.adoc[]
 
-=== 의사 삭제
+=== 의사 삭제 [병원용]
 .curl-request
 include::{snippets}/delete-doctor/curl-request.adoc[]
 
@@ -644,7 +679,7 @@ include::{snippets}/delete-doctor/request-headers.adoc[]
 include::{snippets}/delete-doctor/response-body.adoc[]
 
 
-=== 전체 의사 목록 조회 [서비스 관리자용]
+=== 전체 의사 목록 조회 [관리자용]
 .curl-request
 include::{snippets}/get-doctors (admin)/curl-request.adoc[]
 
@@ -673,7 +708,9 @@ include::{snippets}/get-doctors (admin)/response-body.adoc[]
 include::{snippets}/get-doctors (admin)/response-fields.adoc[]
 
 == ReservationController
-=== 예약 신청
+NOTE: 서비스 관리자에 의해 승인된 병원만 해당 기능을 사용할 수 있습니다.
+
+=== 예약 신청 [고객용]
 .curl-request
 include::{snippets}/post-reservation/curl-request.adoc[]
 
@@ -876,7 +913,7 @@ include::{snippets}/get-reservations(hospital)/response-body.adoc[]
 .response-fields
 include::{snippets}/get-reservations(hospital)/response-fields.adoc[]
 
-=== 예약 목록 조회 [서비스 관리자용]
+=== 예약 목록 조회 [관리자용]
 .curl-request
 include::{snippets}/get-reservations(admin)/curl-request.adoc[]
 
@@ -904,7 +941,7 @@ include::{snippets}/get-reservations(admin)/response-body.adoc[]
 .response-fields
 include::{snippets}/get-reservations(admin)/response-fields.adoc[]
 
-=== 예약 취소
+=== 예약 취소 [고객용]
 .curl-request
 include::{snippets}/delete-reservation/curl-request.adoc[]
 
@@ -931,7 +968,7 @@ include::{snippets}/delete-reservation/response-body.adoc[]
 
 
 == HospitalRateController
-=== 병원 후기 등록
+=== 병원 후기 등록 [고객용]
 .curl-request
 include::{snippets}/post-rate/curl-request.adoc[]
 
@@ -962,7 +999,7 @@ include::{snippets}/post-rate/response-body.adoc[]
 .response-fields
 include::{snippets}/post-rate/response-fields.adoc[]
 
-=== 병원 후기 수정
+=== 병원 후기 수정 [고객용]
 .curl-request
 include::{snippets}/post-rate/curl-request.adoc[]
 
@@ -993,7 +1030,7 @@ include::{snippets}/patch-rate/response-body.adoc[]
 .response-fields
 include::{snippets}/patch-rate/response-fields.adoc[]
 
-=== 한 고객 후기 조회
+=== 한 고객 후기 조회 [고객용]
 .curl-request
 include::{snippets}/get-rates(user)/curl-request.adoc[]
 
@@ -1015,13 +1052,16 @@ include::{snippets}/get-rates(user)/request-body.adoc[]
 .request-headers
 include::{snippets}/get-rates(user)/request-headers.adoc[]
 
+.request-parameters
+include::{snippets}/get-rates(user)/request-parameters.adoc[]
+
 .response-body
 include::{snippets}/get-rates(user)/response-body.adoc[]
 
 .response-fields
 include::{snippets}/get-rates(user)/response-fields.adoc[]
 
-=== 한 병원 후기 조회
+=== 한 병원 후기 조회 [ALL]
 .curl-request
 include::{snippets}/get-rates(hospital)/curl-request.adoc[]
 
@@ -1040,13 +1080,16 @@ include::{snippets}/get-rates(hospital)/path-parameters.adoc[]
 .request-body
 include::{snippets}/get-rates(hospital)/request-body.adoc[]
 
+.request-parameters
+include::{snippets}/get-rates(hospital)/request-parameters.adoc[]
+
 .response-body
 include::{snippets}/get-rates(hospital)/response-body.adoc[]
 
 .response-fields
 include::{snippets}/get-rates(hospital)/response-fields.adoc[]
 
-=== 모든 후기 조회 [서비스 관리자용]
+=== 모든 후기 조회 [관리자용]
 .curl-request
 include::{snippets}/get-rates(admin)/curl-request.adoc[]
 
@@ -1071,7 +1114,7 @@ include::{snippets}/get-rates(admin)/response-body.adoc[]
 .response-fields
 include::{snippets}/get-rates(admin)/response-fields.adoc[]
 
-=== 병원 후기 삭제
+=== 병원 후기 삭제 [고객용]
 .curl-request
 include::{snippets}/delete-rate/curl-request.adoc[]
 
@@ -1097,7 +1140,9 @@ include::{snippets}/delete-rate/request-headers.adoc[]
 include::{snippets}/delete-rate/response-body.adoc[]
 
 == EstimateController
-=== 견적 생성 (v1) [서비스 관리자용]
+=== 견적 생성 (v1) [관리자용]
+NOTE: 특정 병원의 예약 식별자를 List로 받아 해당 예약에 대해 견적을 생성합니다.
+
 .curl-request
 include::{snippets}/post-estimate/curl-request.adoc[]
 
@@ -1128,7 +1173,9 @@ include::{snippets}/post-estimate/response-body.adoc[]
 .response-fields
 include::{snippets}/post-estimate/response-fields.adoc[]
 
-=== 견적 생성(v2) [서비스 관리자용]
+=== 견적 생성(v2) [관리자용]
+NOTE: 특정 병원의 예약 상태가 done인 예약에 대해 월별로 견적이 생성됩니다.
+
 .curl-request
 include::{snippets}/post-estimate(v2)/curl-request.adoc[]
 
@@ -1150,6 +1197,8 @@ include::{snippets}/post-estimate(v2)/request-body.adoc[]
 .request-fields
 include::{snippets}/post-estimate(v2)/request-fields.adoc[]
 
+** estimateDate 형식 : YYYY-MM
+
 .request-headers
 include::{snippets}/post-estimate(v2)/request-headers.adoc[]
 
@@ -1159,7 +1208,7 @@ include::{snippets}/post-estimate(v2)/response-body.adoc[]
 .response-fields
 include::{snippets}/post-estimate(v2)/response-fields.adoc[]
 
-=== 견적 개별 조회 [서비스 관리자용]
+=== 견적 개별 조회 [관리자용]
 .curl-request
 include::{snippets}/get-estimate/curl-request.adoc[]
 
@@ -1187,7 +1236,7 @@ include::{snippets}/get-estimate/response-body.adoc[]
 .response-fields
 include::{snippets}/get-estimate/response-fields.adoc[]
 
-=== 견적 목록 조회 [서비스 관리자용]
+=== 견적 목록 조회 [관리자용]
 .curl-request
 include::{snippets}/get-estimates/curl-request.adoc[]
 
@@ -1215,7 +1264,7 @@ include::{snippets}/get-estimates/response-body.adoc[]
 .response-fields
 include::{snippets}/get-estimates/response-fields.adoc[]
 
-=== 견적 삭제 [서비스 관리자용]
+=== 견적 삭제 [관리자용]
 .curl-request
 include::{snippets}/delete-estimate/curl-request.adoc[]
 

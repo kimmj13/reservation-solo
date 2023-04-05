@@ -37,8 +37,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -191,6 +190,8 @@ class HospitalNoticeControllerTest {
         //when
         ResultActions actions =
                 mockMvc.perform(get("/api/hospital-notice/hospital/{hospitalId}", id)
+                        .queryParam("page", "1")
+                        .queryParam("size", "10")
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -205,6 +206,10 @@ class HospitalNoticeControllerTest {
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
                         pathParameters(parameterWithName("hospitalId").description("병원 식별자")),
+                        requestParameters(
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional()
+                        ),
                         responseFields(List.of(
                                 fieldWithPath("data[].hospitalNoticeId").type(JsonFieldType.NUMBER).description("공지사항 식별자"),
                                 fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),

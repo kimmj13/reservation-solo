@@ -74,7 +74,6 @@ public class EstimateService {
     }
 
     public Estimate findEstimate(Long estimateId) {
-        checkAdmin();
         return existsEstimate(estimateId);
     }
 
@@ -85,7 +84,6 @@ public class EstimateService {
     }
 
     public Page<Estimate> findEstimates(Pageable pageable, String estimateDate, Long hospitalId) {
-        checkAdmin();
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), Sort.by("estimateId").descending());
         return repository.findAllByEstimateDateAndHospital(estimateDate, hospitalId == null ? null : hospitalService.existsHospital(hospitalId), pageable);
     }
@@ -98,18 +96,11 @@ public class EstimateService {
 
     public void deleteEstimate(Long estimateId) {
         Estimate estimate = existsEstimate(estimateId);
-        checkAdmin();
         repository.delete(estimate);
     }
 
     private Estimate existsEstimate(Long estimateId) {
         return repository.findById(estimateId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ESTIMATE_NOT_FOUND));
-    }
-
-    private void checkAdmin() {
-        if (!userService.isServiceAdmin()) {
-            throw new BusinessLogicException(ExceptionCode.ACCESS_FORBIDDEN);
-        }
     }
 }

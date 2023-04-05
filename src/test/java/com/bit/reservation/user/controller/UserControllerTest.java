@@ -118,7 +118,7 @@ class UserControllerTest {
                                 requestFields(
                                         List.of(fieldWithPath("userName").type(JsonFieldType.STRING).description("이름"),
                                                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일(ID)"),
-                                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
+                                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호 (영문, 특수문자, 숫자 포함 8-16자 이내)"),
                                                 fieldWithPath("address").type(JsonFieldType.STRING).description("주소"),
                                                 fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
                                                 fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("휴대폰 번호")
@@ -170,7 +170,7 @@ class UserControllerTest {
                         requestFields(List.of(
                                         fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원 식별자").ignored(),
                                         fieldWithPath("userName").type(JsonFieldType.STRING).description("이름"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호 (영문, 특수문자, 숫자 포함 8-16자 이내)"),
                                         fieldWithPath("address").type(JsonFieldType.STRING).description("주소"),
                                         fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("휴대폰 번호")

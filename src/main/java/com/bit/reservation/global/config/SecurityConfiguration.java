@@ -1,6 +1,5 @@
 package com.bit.reservation.global.config;
 
-import com.bit.reservation.domain.hospital.repository.HospitalRepository;
 import com.bit.reservation.global.security.auth.filter.JwtAuthenticationFilter;
 import com.bit.reservation.global.security.auth.filter.JwtVerificationFilter;
 import com.bit.reservation.global.security.auth.handler.MemberAccessDeniedHandler;
@@ -52,11 +51,13 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .antMatchers(HttpMethod.GET, "/api/doctors", "/api/reservation", "/api/users", "/api/hospital-rate").hasAnyRole("ADMIN")
                         .antMatchers(HttpMethod.PUT, "/api/hospital/**").hasAnyRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/api/estimate/*/hospital/*", "/api/estimate/hospital/*").hasAnyRole("HOSPITAL", "ADMIN")
+                        .antMatchers("/api/estimate/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.GET, "/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users/sign-up", "/api/hospital").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/api/auth/password/**").permitAll()
                         .antMatchers("/api/doctors/**").hasRole("OK")
-                        .antMatchers("/api/doctors/**", "/api/hospital-notice/**").hasAnyRole("HOSPITAL")
+                        .antMatchers("/api/doctors/**", "/api/hospital-notice/**").hasAnyRole("HOSPITAL", "ADMIN")
                         .antMatchers("/api/hospital-rate/**", "/api/users/**").hasAnyRole("USER")
                         .antMatchers("/h2/**").permitAll()
                         .antMatchers("/api/auth/**").permitAll()

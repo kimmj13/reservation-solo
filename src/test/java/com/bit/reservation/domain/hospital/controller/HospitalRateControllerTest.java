@@ -172,6 +172,10 @@ class HospitalRateControllerTest {
                         getResponsePreProcessor(),
                         requestHeaders(headerWithName("Authorization").description("회원 액세스 토큰")),
                         pathParameters(parameterWithName("userId").description("회원 식별자")),
+                        requestParameters(
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional()
+                        ),
                         responseFields(List.of(
                                 fieldWithPath("data[].hospitalRateId").description("병원 후기 식별자"),
                                 fieldWithPath("data[].rating").description("평점"),
@@ -210,6 +214,10 @@ class HospitalRateControllerTest {
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
                         pathParameters(parameterWithName("hospitalId").description("병원 식별자")),
+                        requestParameters(
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional()
+                        ),
                         responseFields(List.of(
                                 fieldWithPath("data[].hospitalRateId").description("병원 후기 식별자"),
                                 fieldWithPath("data[].rating").description("평점"),
@@ -275,10 +283,10 @@ class HospitalRateControllerTest {
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
                         requestParameters(
-                                parameterWithName("page").description("현재 페이지").optional(),
-                                parameterWithName("size").description("페이지당 요수 개수").optional(),
-                                parameterWithName("hospitalId").description("병원 식별자").optional(),
-                                parameterWithName("userId").description("회원 식별자").optional()
+                                parameterWithName("page").description("[선택] 현재 페이지 (기본값:1)").optional(),
+                                parameterWithName("size").description("[선택] 한 페이지당 요소 개수 (기본값:10)").optional(),
+                                parameterWithName("hospitalId").description("[선택] 병원 식별자").optional(),
+                                parameterWithName("userId").description("[선택] 회원 식별자").optional()
                         ),
                         responseFields(List.of(
                                 fieldWithPath("data[].hospitalRateId").description("병원 후기 식별자"),
